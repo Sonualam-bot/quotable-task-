@@ -42,12 +42,41 @@ const initialState = {
   status: "idle",
   tags: [],
   tagStatus: "idle",
+  bookmarks: JSON.parse(localStorage.getItem("bookmarks")) || [],
+  bookmarkedQuotes: JSON.parse(localStorage.getItem("bookmarkedQuotes")) || [],
 };
 
 const quoteSlice = createSlice({
   name: "quotes",
   initialState,
-  reducers: {},
+  reducers: {
+    addToBookmark: (state, action) => {
+      const quoteId = action.payload._id;
+      if (!state.bookmarks.includes(quoteId)) {
+        state.bookmarks.push(quoteId);
+        localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+
+        state.bookmarkedQuotes = [...state.bookmarkedQuotes, action.payload];
+        localStorage.setItem(
+          "bookmarkedQuotes",
+          JSON.stringify(state.bookmarkedQuotes)
+        );
+      }
+    },
+    removeFromBookmark: (state, action) => {
+      const quoteId = action.payload;
+      state.bookmarks = state.bookmarks.filter((id) => id !== quoteId);
+      localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+
+      state.bookmarkedQuotes = state.bookmarkedQuotes.filter(
+        (quote) => quote?._id !== quoteId
+      );
+      localStorage.setItem(
+        "bookmarkedQuotes",
+        JSON.stringify(state.bookmarkedQuotes)
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRandomQuotes.pending, (state) => {
@@ -74,5 +103,7 @@ const quoteSlice = createSlice({
       });
   },
 });
+
+export const { addToBookmark, removeFromBookmark } = quoteSlice.actions;
 
 export default quoteSlice.reducer;

@@ -1,9 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
+  addToBookmark,
   fetchRandomQuotes,
   fetchTagsList,
+  removeFromBookmark,
 } from "../features/quotes/QuoteSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 
 import { CiBookmark } from "react-icons/ci";
@@ -14,7 +16,7 @@ function Home() {
   const quotes = useSelector((state) => state.quotes.quotes);
   const status = useSelector((state) => state.quotes.status);
   const tags = useSelector((state) => state.quotes.tags);
-  const [bookmark, setBookmark] = useState(false);
+  const bookmarks = useSelector((state) => state.quotes.bookmarks);
 
   const tagsForDropdown = tags
     ?.reduce((acc, curr) => {
@@ -35,9 +37,15 @@ function Home() {
   };
 
   const quoteArray = Array.isArray(quotes) ? quotes : [quotes];
+  // console.log(quoteArray);
 
-  const handleAddToBookmark = () => {
-    setBookmark(true);
+  const handleBookmarkToggle = (quote) => {
+    const quoteId = quote._id;
+    if (bookmarks.includes(quoteId)) {
+      dispatch(removeFromBookmark(quoteId));
+    } else {
+      dispatch(addToBookmark(quote));
+    }
   };
 
   useEffect(() => {
@@ -49,13 +57,13 @@ function Home() {
 
   return (
     <div
-      className="w-full h-screen bg-gradient-to-r from-[#161E6C] to-[#5E2AB2] text-white text-3xl
+      className="w-full h-full  text-3xl
 "
     >
       <Navbar />
 
       <div className="flex items-center justify-center flex-col gap-7">
-        <div className=" bg-[#D05252] w-[773px]  h-[263px]  rounded-[30px] p-[40px] ">
+        <div className=" bg-[#D05252] w-[70%]   rounded-[30px] p-[40px] ">
           {status === "loading" ? (
             <h1>Loading...</h1>
           ) : (
@@ -68,9 +76,12 @@ function Home() {
                   <h3> {quote?.content} </h3>
                   <div className="flex justify-around w-full items-center mt-6 ">
                     <p className=" "> - {quote?.author} </p>
-                    <button onClick={handleAddToBookmark}>
-                      {" "}
-                      {bookmark ? <FaBookmark /> : <CiBookmark />}{" "}
+                    <button onClick={() => handleBookmarkToggle(quote)}>
+                      {bookmarks.includes(quote._id) ? (
+                        <FaBookmark />
+                      ) : (
+                        <CiBookmark />
+                      )}
                     </button>
                   </div>
                 </div>
