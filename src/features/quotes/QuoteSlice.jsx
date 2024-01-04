@@ -15,10 +15,26 @@ export const fetchRandomQuotes = createAsyncThunk(
   }
 );
 
+export const fetchTagsList = createAsyncThunk(
+  "/quotes/fetchTagsList",
+  async (_, { rejectWithValues }) => {
+    try {
+      console.log("first");
+      const response = await axios.get(`${BASE_URL}/tags`);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValues(error);
+    }
+  }
+);
+
 const initialState = {
   quotes: [],
   status: "idle",
-  error: "",
+  tags: [],
+  tagStatus: "idle",
 };
 
 const quoteSlice = createSlice({
@@ -36,6 +52,17 @@ const quoteSlice = createSlice({
       })
       .addCase(fetchRandomQuotes.rejected, (state, action) => {
         state.status = "error";
+        state.error = action.error.message;
+      })
+      .addCase(fetchTagsList.pending, (state) => {
+        state.tagStatus = "loading";
+      })
+      .addCase(fetchTagsList.fulfilled, (state, action) => {
+        state.tagStatus = "success";
+        state.tags = action.payload;
+      })
+      .addCase(fetchTagsList.rejected, (state, action) => {
+        state.tagStatus = "error";
         state.error = action.error.message;
       });
   },
