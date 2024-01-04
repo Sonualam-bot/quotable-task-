@@ -11,7 +11,7 @@ function Home() {
   const status = useSelector((state) => state.quotes.status);
   const tags = useSelector((state) => state.quotes.tags);
 
-  const tagsFroDropdown = tags
+  const tagsForDropdown = tags
     ?.reduce((acc, curr) => {
       if (acc.includes(curr.name)) {
         return acc;
@@ -20,6 +20,12 @@ function Home() {
       }
     }, [])
     .sort((a, b) => b.name - a.name);
+
+  const handleTagSelect = (selectedTag) => {
+    dispatch(fetchRandomQuotes(selectedTag));
+  };
+
+  const quoteArray = Array.isArray(quotes) ? quotes : [quotes];
 
   useEffect(() => {
     if (status === "idle") {
@@ -35,9 +41,9 @@ function Home() {
       ) : (
         <>
           <div>
-            {quotes?.map((quote) => {
+            {quoteArray?.map((quote, index) => {
               return (
-                <div key={quote?._id}>
+                <div key={index}>
                   <h3> {quote?.content} </h3>
                   <p>{quote?.author} </p>
                 </div>
@@ -45,10 +51,10 @@ function Home() {
             })}
           </div>
           <div>
-            <select>
+            <select onChange={(e) => handleTagSelect(e.target.value)}>
               <option>Choose tags</option>
-              {tagsFroDropdown?.map((tag, index) => {
-                return <option key={index}> {tag} </option>;
+              {tagsForDropdown?.map((tag) => {
+                return <option key={tag}> {tag} </option>;
               })}
             </select>
           </div>
@@ -57,5 +63,4 @@ function Home() {
     </div>
   );
 }
-
 export default Home;
