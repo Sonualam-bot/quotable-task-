@@ -20,7 +20,7 @@ function Bookmarks() {
         return (
           <div
             key={index}
-            className=" bg-[#D05252] rounded-[30px] p-[40px] w-[45%] text-center "
+            className=" bg-[#D05252] rounded-[30px] p-[40px] sm:w-[80%] w-[75%] text-center "
           >
             <h3> {bookmark?.content} </h3>
             <div className="flex justify-around w-full items-center mt-6 ">

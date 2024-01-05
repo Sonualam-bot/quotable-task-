@@ -62,8 +62,8 @@ function Home() {
     >
       <Navbar />
 
-      <div className="flex items-center justify-center flex-col gap-7">
-        <div className=" bg-[#D05252] w-[70%]   rounded-[30px] p-[40px] ">
+      <div className="flex items-center justify-center flex-col gap-7 w-full h-full">
+        <div className=" bg-[#D05252] sm:w-[90%] w-[70%]   rounded-[30px] p-[40px] sm:p-[20px] ">
           {status === "loading" ? (
             <h1>Loading...</h1>
           ) : (
@@ -71,7 +71,7 @@ function Home() {
               return (
                 <div
                   key={index}
-                  className="w-full h-full flex flex-col  items-center gap-8 "
+                  className="w-full h-full flex flex-col  items-center gap-8 sm:text-[6vw] "
                 >
                   <h3> {quote?.content} </h3>
                   <div className="flex justify-around w-full items-center mt-6 ">
